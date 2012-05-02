@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html><head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>WebSocket</title>
+		<link rel="stylesheet" href="WebSocket_files/main.css">
+		<link rel="stylesheet" href="WebSocket_files/login.css">
+	</head>
+	<body>
+	    <section id="main" class="centerAlign rounded tactileSurface">
+			<aside id="antenna" class="absolute"> </aside>
+			<div id="toppanel">		
+				<div style="display: none;" id="panel" class="login-form"> 
+					 
+					 <div id="centerPanel" class="tactileSurface">
+						<h2>Please Login 007</h2>
+
+						<form id="verify" method="post" action="">
+							<input name="username" placeholder="username" type="text">
+							<input name="port #" placeholder="port #" type="password">
+							<input value="log in" type="submit">
+						</form>
+					</div>
+					
+					<div id="processing">
+						<span class="loading"></span>
+						<span class="loading"></span>
+						<span class="loading"></span>
+						<span class="loading"></span>
+						<span class="loading"></span>
+					</div> 
+				</div>	
+				<!-- The tab on top -->	
+				<div class="tab">
+					<ul class="login">
+						<li class="left">&nbsp;</li>
+						<li>undefined online</li>
+						<li class="sep">|</li>
+						<li id="toggle">
+							<a style="" id="open" class="open" href="#">Shutter Open</a>
+							<a id="close" style="display: none;" class="close" href="#">Shutter Close</a>			
+						</li>
+						<li id="lock" style="display: none;"> LOCKED </li>
+						<li class="right">&nbsp;</li>
+					</ul> 
+				</div> <!-- / top -->	
+				
+			</div>
+			
+			<h1 class="">Q-Telecom Unit</h1>
+			
+			<div id="log" class="centerAlign overflow window rounded windowGlow"><p>WebSocket - status 0</p><p></p><p>Disconnected - status 3</p><p></p></div>
+			
+			<section id="controller" class="centerAlign">
+				<p> Logged in as "ladygaga" (type message and hit ENTER or click SEND) </p>
+				<input id="msg" value="hey paris, where's nicole?" type="textbox">
+				<!-- onkeypress="onkey (event);" -->
+				
+				<button id="send" class="rounded">Send</button>
+				<button id="quit" class="rounded">Quit</button>
+			</section>
+			
+			<section id="loggedIn" class="centerAlign"> 
+				<p> Who's logged in (click on a name to send a private message) </p>
+			    <div id="users" class="centerAlign overflow rounded window windowGlow"><a href="http://localhost/chatClient/newPrivateChat%28Aaron%29" style="color: rgb(0, 0, 204);">Aaron</a>, <a href="http://localhost/chatClient/newPrivateChat%28selenagomez%29" style="color: rgb(119, 153, 153);">selenagomez</a>, <a href="http://localhost/chatClient/newPrivateChat%28parishilton%29" style="color: rgb(204, 119, 0);">parishilton</a>, <a href="http://localhost/chatClient/newPrivateChat%28justinbieber%29" style="color: rgb(119, 153, 153);">justinbieber</a>, <a href="http://localhost/chatClient/newPrivateChat%28edwardvampire%29" style="color: rgb(204, 153, 119);">edwardvampire</a>, <a href="http://localhost/chatClient/newPrivateChat%28bellhuman%29" style="color: rgb(153, 119, 0);">bellhuman</a>, <a href="http://localhost/chatClient/newPrivateChat%28jacobwerewolf%29" style="color: rgb(0, 170, 119);">jacobwerewolf</a></div>
+			</section>
+			
+			
+			<h3>Implemented by tobiaa</h3>
+			
+		</section>
+		
+		<script src="WebSocket_files/jquery.js"> </script>
+		<script src="WebSocket_files/main.js"></script>
+	
+
+</body></html>

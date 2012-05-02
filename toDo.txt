@@ -1,0 +1,58 @@
+9 Tasks COMPLETED!
+
+C) make custom shape for home user in loggedIn menu, different bakcgroud color
+ 
+7) WebSocket Status 0 and 1 have light up buttons or something.
+
+8) Replace quit with clear, move clear somewhere else
+
+9) Move quit functionality to top of phone: Re-Connect, Disconnect to socket
+
+11) Locking mechanism: add lock option to shutter after login
+    when locked create new unlock form
+	
+12) make custom gif for cursor removal: ie. gun target (x) or something
+
+13) Everytime a message arrives (flash/ glow users icon in loggged in panel)
+
+14) Add audio .. html5 audio sound effects
+
+15) new bakckgroud for loadup + bload and gun shot animation.
+Shift existing login background to new locking mechanism
+
+	// Set up Hex to RGB Conversion
+	function hexToR(h) {
+		if(h.length == 3){
+		  h = h + h;
+		}
+		return parseInt((cutHex(h)).substring(0,2),16)
+	}
+	
+	function hexToG(h) {
+		if(h.length == 3){
+		 h = h + h;
+		}
+		return parseInt((cutHex(h)).substring(2,4),16)
+	}
+	
+	function hexToB(h) {
+		if(h.length == 3){
+		 h = h + h;
+		}
+		return parseInt((cutHex(h)).substring(4,6),16)
+	}
+	
+	// Find colors compliment
+	function findCompliment(hex){
+	
+		thisrgb = new Object();
+		thisrgb.r= hexToR(hex);
+		thisrgb.g= hexToR(hex);
+		thisrgb.b= hexToB(hex);
+		var temprgb=thisrgb;
+		temphsv=RGB2HSV(temprgb);
+		temphsv.hue=HueShift(temphsv.hue,180.0);
+		temprgb=HSV2RGB(temphsv);
+		return "rgb(" + temprgb.r +"," + temprgb.g +","+temprgb.b+")";
+		//SetColors(temprgb.r,temprgb.g,temprgb.b,Array('c','2'));
+	};
