@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>WebSocket</title>
+		<title>Tobias HTML 5 Chat Client</title>
 		<link rel="stylesheet" href="main.css">
 		<link rel="stylesheet" href="login.css">
 	</head>
@@ -49,13 +49,11 @@
 			
 			<h1>Q-Telecom Unit</h1>
 			
-			<section id="log" class="centerAlign window overflow rounded">
-			    
+			<section id="log" class="centerAlign window overflow rounded">		    
 				<!-- 
 				Private message areas will be dynamically generate here 
 				All message areas will be swapped in and out by user
 				-->
-				
 			</section>
 			
 			<section id="controller" class = "centerAlign">
@@ -75,13 +73,13 @@
 			
 			
 			<section id="loggedIn" class="centerAlign"> 
-				<p> Who's logged in (click on a name to send a private message) </p>
+				<p> Who's logged in (click name to open private message; red circle to close) </p>
 			    <div id="users" class="centerAlign overflow rounded window"> </div>
 			</section>
 			
 			
 			<h3>Implemented by tobiaa</h3>
-			
+			<img id="imgclone" class="hidden" style="width: 20px; height: 20px;" src="" alt="" />
 		</section>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>

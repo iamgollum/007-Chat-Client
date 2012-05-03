@@ -58,6 +58,7 @@ $(document).ready(function() {
 	/* trigger send */
 	$("#send").live('click', function(){
 	   send();
+	   $('textarea').val('');
 	});
 	
 	function send () {
@@ -72,13 +73,15 @@ $(document).ready(function() {
 		
 		// prepare Message
 		msg = msg.replace(/\n/g,"<br/>");
-		//test replace in loop for each image!
-		/*for(i = 1; i < imageList.length; i++){
-		msg = msg.replace('[img],"<br/>");
-		}
-		*/
-		//here
+		var newImage = $("#imgclone").clone().removeClass("hidden");
 		
+		//test replace in loop for each image!
+		var imgListSize = Object.keys(imageList).length;
+		for(i = 1; i <= imgListSize; i++){
+			newImage.attr('src', imageList[i]);
+			msg = msg.replace("[img" + i + "]", newImage.prop("outerHTML"));
+		}
+
 		var originalMsg = msg;
 		var msgLen = msg.length;
 		var remSize = msgLen;
@@ -86,13 +89,14 @@ $(document).ready(function() {
 		var stop = CHUNK_SIZE;
 		
 		msg = "BROADCAST FROM " + yourName + "\n";
-		
 		// Max Limit
+		/*
 		if(msgLen > 999){ 
 			txt.val("Maximum Exceeded!"); 
 			return; 
 		}
-		
+		*/
+		log ('Before Chunk: ' + originalMsg);
 		// Chunk If Needed
 		if(msgLen > CHUNK_MIN_REQ){
 		
@@ -114,8 +118,8 @@ $(document).ready(function() {
 		}
 
 		try {
+		    log ('Sent: ' + msg);
 			socket.send (msg);
-			//log ('Sent: ' + msg);
 		}
 		catch (ex) {
 			log (ex);
