@@ -17,7 +17,7 @@ $(document).ready(function() {
 	var socket;
 	var psswd;
 	var yourName = "Aaron";
-	var CHUNK_SIZE = 10;
+	var CHUNK_SIZE = 2000;
 	var CHUNK_MIN_REQ = 30;
 	var clients = ["Aaron", "selenagomez","parishilton", "justinbieber", "edwardvampire", "bellhuman", "jacobwerewolf"];
     var cColors = new Object();
@@ -97,6 +97,8 @@ $(document).ready(function() {
 		}
 		*/
 		log ('Before Chunk: ' + originalMsg);
+		log('size of msg: ' + msgLen);
+		
 		// Chunk If Needed
 		if(msgLen > CHUNK_MIN_REQ){
 		
@@ -104,7 +106,9 @@ $(document).ready(function() {
 				msg += "C" + CHUNK_SIZE + "\n" + originalMsg.substring(start, stop) + "\n"; 
 				remSize	-= CHUNK_SIZE;
 				stop += CHUNK_SIZE;
-				start += CHUNK_SIZE;				
+				start += CHUNK_SIZE;
+				log(msg);
+				if(start = 10000){ break; }
 			}
 			// grab remaining
             if(remSize > 0){			
@@ -307,7 +311,7 @@ $(document).ready(function() {
 
 	/* >> Login and Load Up Animations >> */
 	
-	$("#verify").submit(function(){
+	$(".verify").submit(function(){
 	
 	  yourName = $("input:nth-child(1)").attr("value");
 	  psswd = $("input:nth-child(2)").attr("value");
@@ -334,7 +338,7 @@ $(document).ready(function() {
 		sequence.eq(i).animate({opacity:'1.0'}, 400);
 	 
 		if(++i >=count){
-		 $("#centerPanel").replaceWith('<div id="brand"></div>');
+		 //$(".centerPanel").replaceWith('<div id="brand"></div>');
 		 setTimeout(unlock, pause);	
 		 return false;
 		}
@@ -361,6 +365,9 @@ $(document).ready(function() {
 	  init();
 	}
 	
+	function lock(){
+	
+	}
 	/* >> >> >> >> */
 	
 	
@@ -407,6 +414,6 @@ $(document).ready(function() {
 	
 	$("#close").hide("fast");
 	$("#lock").show("slow");	
-	unlock();
+	//unlock();
 	
 });
