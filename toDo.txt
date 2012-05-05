@@ -1,24 +1,20 @@
-9 Tasks COMPLETED!
+14 Tasks COMPLETED!
 
-C) make custom shape for home user in loggedIn menu, different bakcgroud color
+PRIORITY: OPTIMIZE MARKUP: cache dom seraches on elements at top!
  
-7) WebSocket Status 0 and 1 have light up buttons or something.
+15) WebSocket Status 0 and 1 have light up buttons or something.
 
-8) Replace quit with clear, move clear somewhere else
+16) Replace quit with clear, move clear somewhere else
 
-9) Move quit functionality to top of phone: Re-Connect, Disconnect to socket
+17) Move quit functionality to top of phone: Re-Connect, Disconnect to socket
 
-11) Locking mechanism: add lock option to shutter after login
+18) Locking mechanism: add lock option to shutter after login
     when locked create new unlock form
 	
-12) make custom gif for cursor removal: ie. gun target (x) or something
+19) make custom gif for cursor removal: ie. gun target (x) or something
 
-13) Everytime a message arrives (flash/ glow users icon in loggged in panel)
+20) Everytime a message arrives (flash/ glow users icon in loggged in panel)
 
-14) Add audio .. html5 audio sound effects
-
-15) new bakckgroud for loadup + bload and gun shot animation.
-Shift existing login background to new locking mechanism
 
 	// Set up Hex to RGB Conversion
 	function hexToR(h) {

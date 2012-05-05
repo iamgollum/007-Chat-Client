@@ -3,16 +3,18 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Tobias HTML 5 Chat Client</title>
-		<link rel="stylesheet" href="main.css">
-		<link rel="stylesheet" href="login.css">
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/login.css">
 	</head>
 	<body>
 	    <section id="main" class="centerAlign rounded tactileSurface">
 			<aside id="antenna" class="absolute"> </aside>
 			<div id="toppanel">		
-				<div id="panel" class="login-form"> 
+				<div id="panel" class="login-form goldschmidt"> 
 					 
-					 <div class="startUp centerPanel tactileSurface">
+					 <div id="blood" class="absolute"></div>
+					 
+					 <div class="startUp">
 						<h2>Please Login 007</h2>
 
 						<form class ="verify" method="post" action="">
@@ -34,14 +36,14 @@
 					
 					<div class = "ulock hidden centerPanel tactileSurface">
 						<h2>UnLock Unit</h2>
-							<form class = "verify" method="post" action="">
+						<form class = "verify" method="post" action="">
 							<input type="text" name="username" placeholder="username">
 							<input type="password" name="password #" placeholder="password #">
 							<input type="submit" value="unlock">
 						</form>
 					</div>
 					
-					<div id= "processing">
+					<div id = "processing">
 						<span class="loading"></span>
 						<span class="loading"></span>
 						<span class="loading"></span>
@@ -59,7 +61,7 @@
 							<a style="display: none;" id="open" class="open" href="#">Shutter Open</a>
 							<a id="close" style="display: block;" class="close" href="#">Shutter Close</a>			
 						</li>
-						<li id="lock" style="display: none;"> LOCKED </li>
+						<li id="panelMsg" class="hidden"> LOCKED </li>
 						<li class="right">&nbsp;</li>
 					</ul> 
 				</div> <!-- / top -->	
@@ -102,6 +104,7 @@
 		</section>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
-		<script src="main.js"></script>
+		<script src="js/jquery.backgroundPosition.js"></script>
+		<script src="js/main.js"></script>
 	</body>
 </html>
