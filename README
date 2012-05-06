@@ -1,16 +1,60 @@
 ----------------------------
 Author: Aaron Tobias
 School: Rensselaer Polytechnic Institute
-Project: HTML 5 Chat Client (server was previous project)
+Project: HTML 5 Chat Client
+
 Description: 
+
+	Chat Client using the latest HTML 5 web sockets and file reader.
+	This is an experimental project and the server is not completed
+	yet. I am currently using an echo server I found online for now.
 
 Protocol:
 
-Bonus Criteria Achieved: 
+	When a client receives a message from the server,
+    it will appear as a FROM message, but with either
+    BROADCAST or PRIVATE prepended (indicating the type
+    of message it is), as in:
+
+      BROADCAST FROM ladygaga\n
+      9\n
+      You suck!
+
+      PRIVATE FROM selenagomez\n
+      15\n
+      leave me alone!
+	
+	-----------------------------------------------------------
+    CHUNKED MESSAGE EXAMPLE [ chunk if greater than 99 bytes ]
+	-----------------------------------------------------------
+	
+	SEND selenagomez\n
+	  C108\n
+	  step off my turf!\n
+	  step off my turf!\n
+	  step off my turf!\n
+	  step off my turf!\n
+	  step off my turf!\n
+	  step off my turf!\n
+	  C8\n
+	  got it?!
+	  C0
+	  
+	  LOGIN:  I AM <userID> 
+	  
+	  GET ONLINE CHATTERS:  USERS
+
+Current Features or In progress: 
 
 	inline image support
 	image processing support
-	slick interface && over the top animations
+	slick interface
+	private chat support
+	over the top animations --> Professor Goldschmidt as 007
+	HTML 5 audio
+	HTML 5 Web Sockets
+	HTML 5 file reader
+	HTML 5 Web Storage (maybe not - not sure yet)
 	
 Class: Network Programming
 Version: 1.0
