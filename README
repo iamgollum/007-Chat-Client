@@ -44,17 +44,22 @@ Protocol:
 	  
 	  GET ONLINE CHATTERS:  USERS
 
-Current Features or In progress: 
+Current Features: 
 
-	inline image support
-	image processing support
 	slick interface
 	private chat support
 	over the top animations --> Professor Goldschmidt as 007
 	HTML 5 audio
 	HTML 5 Web Sockets
 	HTML 5 file reader
-	HTML 5 Web Storage (maybe not - not sure yet)
+	
+In progress:
+		HTML 5 Web Storage (maybe - not sure yet)
+		inline image support
+		image processing support
+		XSS protection
+		Optimize JavaScript 
+		DRY Design
 	
 Class: Network Programming
 Version: 1.0
