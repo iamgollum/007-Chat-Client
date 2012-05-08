@@ -1,19 +1,12 @@
 /*
-CSCI-4220 Network Programming
-Project #4 Chat Client Protocol
-
-Your chat client must implement all TCP aspects of
-the protocol specified in Project #3.
-
-You may assume that UDP will be ignored.
-
-You must suppsswd (via TCP and WebSockets) both chunked
-and non-chunked messaging.  You may assume that all
-data/chunks will be received successfully by the client.
+File: main.js
+Author: Aaron Tobias
+url: http://www.aarontobias.com
 */
 
 $(document).ready(function() {
-	//Globals
+	
+	// Primary Variables
 	var socket;
 	var psswd;
 	var yourName = "Aaron";
@@ -23,6 +16,22 @@ $(document).ready(function() {
     var cColors = new Object();
 	var imageList = new Object();
 	var loadedPage = this;
+	
+	/* Cache frequently used DOM lookup */
+	var close = $("#close");
+	var open = $("#open");
+    var panelMsg = $("#panelMsg");
+	var slidingPanel = $("div#panel");
+	var lockPanel = $(".lock");
+	var unlockPanel = $(".ulock");
+	var uxWindows = $(".window");
+	var graphicBlood = $("#blood");
+	var startUpAnimArea = $(".startUp");
+	
+	/* preload Audio file */
+	var bondAudio = loadedPage.createElement("audio");
+	bondAudio.src = "audio/TomorrowNeverDies.wav";
+	bondAudio.load();
 	
 	/* >> HTML 5 Web Sockets >> */
 
@@ -295,8 +304,9 @@ $(document).ready(function() {
 	oFReader.onload = function (oFREvent) {  
 	  var byteImageData = oFREvent.target.result;
 	  loadedPage.getElementById("uploadPreview").src = byteImageData;
+	  var msg =  $("#msg");
 	  
-	  $("#msg").val($("#msg").val() + '[img' + imageCount +']'); 
+	  msg.val(msg.val() + '[img' + imageCount +']'); 
 	  imageList[imageCount] = byteImageData;
 	  imageCount++;
 	};  
@@ -357,12 +367,12 @@ $(document).ready(function() {
 	
 	// Animation 1: start sequence
 	function bondSequence(){
-	  $("#panelMsg").hide("slow");
-	  $("#close").hide("slow");	
+	  panelMsg.hide("slow");
+	  close.hide("slow");	
 	  $("#processing").addClass("hidden");
-	  $(".startUp").addClass("hidden");	  
-	  $("#blood").animate({top:'0px'}, 10000);
-	  $("#panel").animate({backgroundPosition: '-195px 50%'}, 2000)
+	  startUpAnimArea.addClass("hidden");	  
+	  graphicBlood.animate({top:'0px'}, 10000);
+	  slidingPanel.animate({backgroundPosition: '-195px 50%'}, 2000)
 	  .animate({backgroundPosition: '-225px 55%'}, 1000)
 	  .animate({backgroundPosition: '-235px 45%'}, 1000)
 	  .animate({backgroundPosition: '-225px 65%'}, 1000)
@@ -370,12 +380,9 @@ $(document).ready(function() {
 	  setTimeout(unlock, 10500);
 	}
 	
-	var audio = loadedPage.createElement("audio");
-	
 	function triggerAudio(segment){
 		if(segment = "startUp"){
-			audio.src = "audio/TomorrowNeverDies.wav";
-			audio.play();
+			bondAudio.play();
 		}
 	}
 
@@ -389,13 +396,14 @@ $(document).ready(function() {
 	
 	});
 	
-	// Animation 2: lock sequence	
+	/* Animation 2: lock sequence */
+	
 	function lock(){
-		$("#close").hide("slow");
-		$(".lock").addClass("hidden");
-		$(".ulock").removeClass("hidden");
-		$("#panelMsg").html("LOCKED");
-		$("#panelMsg").show("slow");
+		close.hide("slow");
+		lockPanel.addClass("hidden");
+		unlockPanel.removeClass("hidden");
+		panelMsg.html("LOCKED");
+		panelMsg.show("slow");
 	}
 	
 	$(".ulock form").submit(function(){
@@ -412,26 +420,26 @@ $(document).ready(function() {
 	});
 	
 	function ulock(){
-	  $("#panelMsg").hide("slow");
-	  $("#close").hide("slow");
-	  $("div#panel").slideUp(2000, function(){
-			  $("#open").show("slow");
+	  panelMsg.hide("slow");
+	  close.hide("slow");
+	  slidingPanel.slideUp(2000, function(){
+			  open.show("slow");
 			  $(this).addClass("hidden");
-			  $(".lock").removeClass("hidden");
-			  $(".ulock").addClass("hidden");
+			  lockPanel.removeClass("hidden");
+			  unlockPanel.addClass("hidden");
 	  });	
 	}
 
-	// Animation 3: unlock sequence
+	/* Animation 3: unlock sequence */
 	function unlock(){
-	  $("#panelMsg").hide("slow");
-	  $("#close").hide("slow");
-	  $("div#panel").slideUp(2000, function(){
-			  $("#open").show("slow");
+	  panelMsg.hide("slow");
+	  close.hide("slow");
+	  slidingPanel.slideUp(2000, function(){
+			  open.show("slow");
 	  });	
 	  
 	  $(".login li:nth-child(2)").html(yourName + " online");
-	  $(".window").addClass("windowGlow");
+	  uxWindows.addClass("windowGlow");
 	  $("#log").append('<div id="' + yourName + '" class="currentClient"> </div>');
 	  getClientListing();
 	  init();
@@ -439,47 +447,40 @@ $(document).ready(function() {
 	}
 	
 	function displayLoginLock(){
-		$(".startUp").addClass("hidden");
-		$(".lock").removeClass("hidden");
+		startUpAnimArea.addClass("hidden");
+		lockPanel.removeClass("hidden");
 		$(".login-form").removeClass("goldschmidt");
-		$("#blood").addClass("hidden");
+		graphicBlood.addClass("hidden");
 	}
 	
-	/* >> >> >> >> */
 	
+	/* Animation 4: panel sliding sequence of events */
 	
-	/* >> Panel Sliding Animations >> */
+	open.click(function(){
 	
-	// Expand Panel
-	$("#open").click(function(){
-	
-		$("div#panel").slideDown(1000, function(){
-			$("close").show("slow");
+		slidingPanel.slideDown(1000, function(){
+			close.show("slow");
 		});	
-        $(".window").removeClass("windowGlow");		
+        uxWindows.removeClass("windowGlow");		
 	});	
 	
-	// Collapse Panel
-	$("#close").click(function(){
-		$("open").hide("fast");
-		$("div#panel").slideUp(1000, function(){
-			$("open").show("slow");
+	/* Collapse Panel */
+	close.click(function(){
+		open.hide("fast");
+		slidingPanel.slideUp(1000, function(){
+			open.show("slow");
 		});	
-		$(".window").addClass("windowGlow");		
+		uxWindows.addClass("windowGlow");		
 	});		
 	
-	// Switch button types
+	/* Switch button types */
 	$("#toggle a").click(function () {
-		$("#toggle a").slideToggle("slow");
+		$(this).slideToggle("slow");
 	});
-	
-	/* >> >> >> >> */
 	
 	
 	/* Initialization */
-	
-	$("#close").hide("fast");
-	$("#panelMsg").show("slow");	
-	//unlock();
+	close.hide("fast");
+	panelMsg.show("slow");	
 	
 });

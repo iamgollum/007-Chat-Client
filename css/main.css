@@ -1,3 +1,8 @@
+/*
+File: main.css
+Author: Aaron Tobias
+url: http://www.aarontobias.com
+*/
 html , body {
 	font: normal 0.9em arial , helvetica;
 	position: relative;
@@ -203,7 +208,7 @@ font-weight: bold;
 	background-image: url(../images/blood.png);
 	background-repeat: no-repeat;
 	background-size: 550px 720px;
-	background-position: center center;
+	background-position: center bottom;
 	top: -670px;
 	left: 0px;
 	z-index: 3;
