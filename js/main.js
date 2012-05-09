@@ -39,19 +39,23 @@ $(document).ready(function() {
 	bondAudio.src = "audio/TomorrowNeverDies.wav";
 	bondAudio.load();
 	
+	
 	/* >> HTML 5 Web Sockets >> */
 
 	function init () {
 	
-		var host = "ws://karnani.co:8787/chat"; /* ws://tomrozanski.com:8787/chat  ws://echo.websocket.org/ echo server*/
-		
+		var host = "ws://karnani.co:8787/chat"; /*ws://karnani.co:8787/chat ws://tomrozanski.com:8787/chat  ws://echo.websocket.org/ echo server*/
+		var sequence = $("#socketStatus .loading");
+
 		try {
 			socket = ("MozWebSocket" in window ? new MozWebSocket (host) : new WebSocket(host));
 
 				log ('WebSocket - status ' + socket.readyState);
+				sequence.eq(0).animate({opacity:'1.0'}, 1000);
 			
 			socket.onopen = function (msg) {
 				log ("Welcome - status " + this.readyState);
+				sequence.eq(1).animate({opacity:'1.0'}, 1000);
 			}
 			
 			socket.onmessage = function (msg) {
@@ -59,13 +63,15 @@ $(document).ready(function() {
 			   if(serverResponse(msg.data) == "OK"){
 				  LOGGED_IN = 1;
 				  CURRENT_PRIVATE_USER = yourName;
-				  //loginAnimation();
-				  unlock();
+				  loginAnimation();
+				  //unlock();
 			   };
 			}
 
 			socket.onclose = function (msg) {
 				log ("Disconnected - status " + this.readyState); 
+				sequence.eq(0).animate({opacity:'1.0'}, 1000);
+				sequence.eq(1).animate({opacity:'1.0'}, 1000);
 			}
 		}
 		catch (ex) {
@@ -110,10 +116,13 @@ $(document).ready(function() {
 		var start = 0;
 		var stop = CHUNK_SIZE;
 		
-		msg = "BROADCAST\n";
 		
 		if(CURRENT_PRIVATE_USER != yourName){
-			msg = "PRIVATE FROM " + yourName;
+			msg = "SEND " + CURRENT_PRIVATE_USER + "\n";
+			log(originalMsg, yourName, 1);
+		}
+		else{
+			msg = "BROADCAST\n";
 		}
 		// Max Limit
 		
@@ -134,7 +143,6 @@ $(document).ready(function() {
 		
 		    while(remSize > CHUNK_SIZE){
 				msg += "C" + CHUNK_SIZE + "\n" + originalMsg.substring(start, stop) + "\n"; 
-				log();
 				remSize	-= CHUNK_SIZE;
 				stop += CHUNK_SIZE;
 				start += CHUNK_SIZE;
@@ -151,7 +159,6 @@ $(document).ready(function() {
 		}
 
 		try {
-		    log ('Sent: ' + msg);
 			socket.send (msg);
 		}
 		catch (ex) {
@@ -163,14 +170,15 @@ $(document).ready(function() {
 
 		var lines = resp.split("\n");
 		var users = resp.split(",");
-		
+
 		if( (users[0] == yourName && users.length == 1) || users.length > 1){
 			
 			clients = users;
 			getClientListing();
 			return;
 		}
-		log(resp);
+		
+		log("Server: " +resp, yourName);
 		
 		var pattern = /\d/g;
         var compiledMsg = "";
@@ -205,6 +213,7 @@ $(document).ready(function() {
 					compiledMsg += lines[i];
 			}
 		}
+
 		log(compiledMsg, userID, isPrivate);
 	 }
      
@@ -212,10 +221,12 @@ $(document).ready(function() {
 	$(".client").live("click", function(){
 	    
 		$(".currentUser").parent().css("border", "2px solid rgb(216, 216, 211)");
+		$(".currentUser").siblings().removeClass("privateOn");
 	    $(".currentUser").removeClass('currentUser');
 		
 		var user = $(this).attr('id').substring(1);
-       
+        CURRENT_PRIVATE_USER = user;
+		
 		if( !( $("#"+user).hasClass("currentClient")) )
 		{
 			$(".currentClient").addClass("hidden").removeClass("currentClient");
@@ -229,29 +240,13 @@ $(document).ready(function() {
 				$("#log").append('<div id="' + user + '"> </div>');
 				$("#"+user).addClass("currentClient");
 				$(this).parent().addClass("open");
-				$(this).siblings().addClass("remove");
-
 			}
 		}
 		$(this).addClass('currentUser');
 		$(this).parent().css("border", "2px solid rgb(155, 155, 198)");
+		$(this).siblings().addClass("privateOn");
 	});
 	
-	// Remove private client
-    $(".remove").live("click", function(){
-        
-		var sibling = $(this).siblings();
-		var clientId = sibling.attr('id').substring(1);
-		
-		$(this).parent().removeClass("open");
-		$("#"+clientId).remove();
-		$("#"+yourName).removeClass("hidden").addClass("currentClient");
-		$(".currentUser").parent().css("border", "2px solid rgb(216, 216, 211)");
-		$(".currentUser").removeClass('currentUser');
-		$("#_"+yourName).addClass("currentUser");
-		$(".currentUser").parent().css("border", "2px solid rgb(155, 155, 198)");
-	});	
-	 
 	// Request clients from Server periodically
 	function getClientListing () {
 	
@@ -271,6 +266,8 @@ $(document).ready(function() {
 		}
 		$("#controller p").html('Logged in as "' + yourName + '" (type message and hit ENTER or click SEND)');
 		$("#users").append(allUsers);
+		$("#_"+yourName).addClass('currentUser');
+		$("#_"+yourName).parent().css("border", "2px solid rgb(155, 155, 198)");
 		
 		/* Remove Disconnected Clients */
 		var allLinks = $(".client");
@@ -279,7 +276,7 @@ $(document).ready(function() {
 			var id = $(this).attr('id');
 
 			if($(this).hasClass("online")){
-				log(id + " is online");
+				//log(id + " is online");
 			}
 			else
 			if(!$(this).hasClass("online") && $(this).hasClass("check")){
@@ -343,7 +340,12 @@ $(document).ready(function() {
         cColors[n] = color;		
 		var link = '<span>';
 		link += '<a id="_'+ n +'" href="#"' +' style=" color: ' + color + '" class="client">' + n + '</a>';
-		link += '<a href="#"><></a>';
+		
+		if(n != yourName)
+			link += '<a href="#" class="private"><></a>';
+		else
+			link += '<a href="#" class="broadcast"><></a>';
+		
 		link += '</span>';
 		return link;
 	}
@@ -410,7 +412,7 @@ $(document).ready(function() {
 	
 	// Animation 0: start sequence
 	function loginAnimation(){
-		var sequence = $(".loading");
+		var sequence = $("#processing .loading");
 		var count = sequence.length;
 		var i = 0;
 		var pause = 1500;
@@ -530,7 +532,6 @@ $(document).ready(function() {
         uxWindows.removeClass("windowGlow");		
 	});	
 	
-	/* Collapse Panel */
 	close.click(function(){
 		close.hide("slow");
 		slidingPanel.slideUp(1000, function(){
@@ -539,7 +540,9 @@ $(document).ready(function() {
 		uxWindows.addClass("windowGlow");		
 	});		
 	
+	
 	/* Initialization */
+	
 	close.hide("fast");
 	open.hide("fast");
 	panelMsg.show("slow");	

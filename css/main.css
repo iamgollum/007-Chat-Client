@@ -296,7 +296,21 @@ font-weight: bold;
 .tab a:hover.open {background: url(images/bt_open.png) no-repeat left -19px;}
 .tab a:hover.close {background: url(images/bt_close.png) no-repeat left -19px;}
 */
-
+#socketStatus{
+	top: 10px;
+	left: 10px;
+	height: 30px;
+	width: 40px;
+}
+	.pulse{
+		-moz-animation-name: whitePulse;
+		-moz-animation-duration: 2s;
+		-moz-animation-iteration-count: infinite;
+		-webkit-animation-name: whitePulse;
+		-webkit-animation-duration: 2s;
+		-webkit-animation-iteration-count: infinite;
+	}
+	
 #processing{
 	margin: 100px auto;
 	height: 30px;
@@ -310,6 +324,7 @@ font-weight: bold;
 		height: 20px;
 		float: left;
 		opacity: 0.2; /*raise opacity for loading section*/
+		text-align: center;
 	}
 
 	h1{
@@ -318,14 +333,8 @@ font-weight: bold;
 	padding: 0px;
 	margin: 0px;
 	margin-top: 20px;
-	-moz-animation-name: whitePulse;
-	-moz-animation-duration: 2s;
-	-moz-animation-iteration-count: infinite;
-	-webkit-animation-name: whitePulse;
-	-webkit-animation-duration: 2s;
-	-webkit-animation-iteration-count: infinite;
 	}
-
+	
 	
 #log{
 width: 500px;
@@ -402,16 +411,20 @@ padding: 2px;
 color: rgba(255,255,255, 0);
 }
 
-#users .open .remove{
-cursor: crosshair;
-color: white;
+a.private, a.broadcast{
 background: rgba(238,0,0,0.5);
 border-radius: 50px;
 text-align: center;
 padding: 1px;
+margin-left: 2px;
 }
 
-#users .open .remove:hover{
+a.broadcast{
+background: rgba(0,0,0,0.8);
+border-radius: 5px;
+}
+
+#users .open a.privateOn{
 background: rgba(238,0,0,0.8);
 }
 
