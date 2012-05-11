@@ -39,12 +39,16 @@ $(document).ready(function() {
 	bondAudio.src = "audio/TomorrowNeverDies.wav";
 	bondAudio.load();
 	
+	/*DEBUG*/
+	var DEBUG_MODE = 0;
+	
 	
 	/* >> HTML 5 Web Sockets >> */
 
 	function init () {
 	
-		var host = "ws://karnani.co:8787/chat"; /*ws://karnani.co:8787/chat ws://tomrozanski.com:8787/chat  ws://echo.websocket.org/ echo server*/
+		var host = "ws://karnani.co:8787/chat"; 
+		/*ws://tomrozanski.com:8787/chat  ws://echo.websocket.org/ echo server*/
 		var sequence = $("#socketStatus .loading");
 
 		try {
@@ -63,15 +67,18 @@ $(document).ready(function() {
 			   if(serverResponse(msg.data) == "OK"){
 				  LOGGED_IN = 1;
 				  CURRENT_PRIVATE_USER = yourName;
-				  loginAnimation();
-				  //unlock();
+				  
+				  if(!DEBUG_MODE) 
+					loginAnimation();
+				  else
+				   unlock();
 			   };
 			}
 
 			socket.onclose = function (msg) {
 				log ("Disconnected - status " + this.readyState); 
-				sequence.eq(0).animate({opacity:'1.0'}, 1000);
-				sequence.eq(1).animate({opacity:'1.0'}, 1000);
+				sequence.eq(0).animate({opacity:'0.2'}, 1000);
+				sequence.eq(1).animate({opacity:'0.2'}, 1000);
 			}
 		}
 		catch (ex) {
@@ -119,7 +126,7 @@ $(document).ready(function() {
 		
 		if(CURRENT_PRIVATE_USER != yourName){
 			msg = "SEND " + CURRENT_PRIVATE_USER + "\n";
-			log(originalMsg, yourName, 1);
+			log(originalMsg, CURRENT_PRIVATE_USER, 1);
 		}
 		else{
 			msg = "BROADCAST\n";
@@ -178,7 +185,7 @@ $(document).ready(function() {
 			return;
 		}
 		
-		log("Server: " +resp, yourName);
+		//log("Server: " +resp, yourName);
 		
 		var pattern = /\d/g;
         var compiledMsg = "";
@@ -198,10 +205,22 @@ $(document).ready(function() {
 			   
 				if(head[0] == "BROADCAST"){ 
 					userID = head[2];
+					
+					$("#_"+yourName).parent().css("background-color", "rgb(188, 51, 13)");
+					
+					setTimeout(function(){
+						$("#_"+yourName).parent().css("background-color", "white");
+					}, 500);
 				}
 				if(head[0] == "PRIVATE"){
 			        isPrivate = 1;
 					userID = head[2];
+					
+					$("#_"+userID).parent().css("background-color", "rgb(188, 51, 13)");
+					
+					setTimeout(function(){
+						$("#_"+userID).parent().css("background-color", "white");
+					}, 500);
 				}
 			}
 			else{
@@ -266,8 +285,11 @@ $(document).ready(function() {
 		}
 		$("#controller p").html('Logged in as "' + yourName + '" (type message and hit ENTER or click SEND)');
 		$("#users").append(allUsers);
-		$("#_"+yourName).addClass('currentUser');
-		$("#_"+yourName).parent().css("border", "2px solid rgb(155, 155, 198)");
+
+		if($('.currentUser').attr('id') == undefined){
+			$("#_"+yourName).addClass('currentUser');
+			$("#_"+yourName).parent().css("border", "2px solid rgb(155, 155, 198)");
+		}
 		
 		/* Remove Disconnected Clients */
 		var allLinks = $(".client");
@@ -384,13 +406,15 @@ $(document).ready(function() {
 	  if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }  
 	  oFReader.readAsDataURL(oFile);  
 	} 
-	
-	/* >> >> >> >> */	
-	
+		
 	$("#upload").change(function(){
 		loadImageFile();
 	});
 
+	
+	/* >> >> >> >> */	
+
+	
 	/* >> Login and Load Up Animations >> */
 	
 	$(".startUp form").submit(function(){
@@ -458,8 +482,8 @@ $(document).ready(function() {
 	$(".lock form").submit(function(){
 	  var submitName = $(".lock input:nth-child(1)").attr("value");
 	  var submitPasswd = $(".lock input:nth-child(2)").attr("value");
-	  if(yourName == "" || yourName != submitName){ return; }
-	  if(psswd == "" || psswd != submitPasswd) {return; }
+	  if(yourName == "" || yourName != submitName){ return false; }
+	  if(psswd == "" || psswd != submitPasswd) {return false; }
 	  lock();
 	  return false;
 	
@@ -479,8 +503,8 @@ $(document).ready(function() {
 	  var submitName = $(".ulock input:nth-child(1)").attr("value");
 	  var submitPasswd = $(".ulock input:nth-child(2)").attr("value");
 	  
-	  if(yourName == "" || yourName != submitName){return; }
-	  if(psswd == "" || psswd != submitPasswd) {return; }
+	  if(yourName == "" || yourName != submitName){return false; }
+	  if(psswd == "" || psswd != submitPasswd) {return false; }
 
 	  ulock();
 	  
