@@ -10,9 +10,9 @@ $(document).ready(function() {
 	var socket;
 	var psswd;
 	var serverMsg = "";
-	var yourName = "";
-	var CHUNK_SIZE = 500;
-	var CHUNK_MIN_REQ = 200;
+	var yourName = "Aaron";
+	var CHUNK_SIZE = 10;
+	var CHUNK_MIN_REQ = 50000;
 	var clients = [];
     var cColors = new Object();
 	var imageList = new Object();
@@ -39,16 +39,27 @@ $(document).ready(function() {
 	bondAudio.src = "audio/TomorrowNeverDies.wav";
 	bondAudio.load();
 	
-	/*DEBUG*/
+	/*DEBUG */
 	var DEBUG_MODE = 0;
+	
+	/* Test Chunking and Inline Images with Echo Server */
+	var ECHO_SERVER_CHUNK_TEST = 1;
+	var ECHO_SERVER_START_TEST = 1;
+	var INLINE_IMAGE_TEST = 1;
 	
 	
 	/* >> HTML 5 Web Sockets >> */
 
 	function init () {
 	
-		var host = "ws://karnani.co:8787/chat"; 
-		/*ws://tomrozanski.com:8787/chat  ws://echo.websocket.org/ echo server*/
+	   var host = "";
+	   
+	   if( INLINE_IMAGE_TEST || ECHO_SERVER_CHUNK_TEST)
+		  host = "ws://echo.websocket.org/"; 
+	   else
+		host = "ws://karnani.co:8787/chat";	
+		/* Other option if running: ws://aarontobias.com:8787/chat, ws://tomrozanski.com:8787/chat */
+		
 		var sequence = $("#socketStatus .loading");
 
 		try {
@@ -64,14 +75,16 @@ $(document).ready(function() {
 			
 			socket.onmessage = function (msg) {
 
-			   if(serverResponse(msg.data) == "OK"){
+			   if(serverResponse(msg.data) == "OK" || ECHO_SERVER_START_TEST){
 				  LOGGED_IN = 1;
 				  CURRENT_PRIVATE_USER = yourName;
 				  
-				  if(!DEBUG_MODE) 
+				  if(DEBUG_MODE) 
 					loginAnimation();
 				  else
 				   unlock();
+				  
+				  ECHO_SERVER_START_TEST = 0;
 			   };
 			}
 
@@ -84,10 +97,6 @@ $(document).ready(function() {
 		catch (ex) {
 			log (ex);
 		}
-		
-		/*
-		$("#msg").focus();
-		*/
 	}
 	
 	/* trigger send */
@@ -114,6 +123,7 @@ $(document).ready(function() {
 		var imgListSize = Object.keys(imageList).length;
 		for(i = 1; i <= imgListSize; i++){
 			newImage.attr('src', imageList[i]);
+			newImage.attr('target', "_blank");
 			msg = msg.replace("[img" + i + "]", newImage.prop("outerHTML"));
 		}
 
@@ -166,6 +176,11 @@ $(document).ready(function() {
 		}
 
 		try {
+		
+			if( DEBUG_MODE){
+				log("Sent: "+msg, yourName);
+			}
+			
 			socket.send (msg);
 		}
 		catch (ex) {
@@ -178,23 +193,34 @@ $(document).ready(function() {
 		var lines = resp.split("\n");
 		var users = resp.split(",");
 
-		if( (users[0] == yourName && users.length == 1) || users.length > 1){
+		/* get client listing */
+		if(!INLINE_IMAGE_TEST && ((users[0] == yourName && users.length == 1) || users.length > 1)){
 			
 			clients = users;
 			getClientListing();
 			return;
 		}
 		
-		//log("Server: " +resp, yourName);
+		if(DEBUG_MODE){
+			log("Server: " +resp, yourName);
+			if(lines.length > 2)
+				log("Lines: " +lines[2], yourName);
+		}
 		
-		var pattern = /\d/g;
+		var chunkPattern = /C\d+/;
+		var imagePattern = /data:image/;
+		var numbersOnly = /^[0-9]+/;
         var compiledMsg = "";
 		var isPrivate = 0;
 		var userID = "";
 
-		/* For Login "I AM" response */
+		/* For General Response */
 		if(lines[0] == "OK"){
 			return "OK";
+		}
+		
+		if(lines[0] == "ERROR"){
+			return "ERROR";
 		}
 		
 		for(i=0; i < lines.length; i++){
@@ -204,7 +230,12 @@ $(document).ready(function() {
 				var head = lines[i].split(" ");
 			   
 				if(head[0] == "BROADCAST"){ 
-					userID = head[2];
+				
+				    if(INLINE_IMAGE_TEST || ECHO_SERVER_CHUNK_TEST){
+						userID = yourName;
+					}	
+					else
+						userID = head[2];
 					
 					$("#_"+yourName).parent().css("background-color", "rgb(188, 51, 13)");
 					
@@ -224,15 +255,17 @@ $(document).ready(function() {
 				}
 			}
 			else{
-			    /*
-			    var line = lines[i].match(pattern);
-				alert(line);
-				*/
-				if(lines[i].match(pattern) == null)
+
+				if(lines[i].match(numbersOnly) == null){
+					log("Found only letters", yourName);
 					compiledMsg += lines[i];
+				}
+				else if(lines[i].match(imagePattern) != null){
+					compiledMsg += lines[i];
+				}
 			}
 		}
-
+		
 		log(compiledMsg, userID, isPrivate);
 	 }
      
@@ -312,7 +345,10 @@ $(document).ready(function() {
 	
 	function requestClientList(){
 		socket.send("USERS\n");
-		CRON_SCRIPT = setTimeout(requestClientList, 10000);
+		
+		if(!ECHO_SERVER_CHUNK_TEST){
+			CRON_SCRIPT = setTimeout(requestClientList, 10000);
+		}
 	}
 	
 	
@@ -397,6 +433,7 @@ $(document).ready(function() {
 	  
 	  msg.val(msg.val() + '[img' + imageCount +']'); 
 	  imageList[imageCount] = byteImageData;
+	  //log("IMG: " + imageList[imageCount]);
 	  imageCount++;
 	};  
 	  
@@ -411,6 +448,16 @@ $(document).ready(function() {
 		loadImageFile();
 	});
 
+	// clickable images in new window
+	$("#log img").live('click', function(){
+		var w = window.open('popup_image.html', '', 'width=400,height=400');
+		var imageId = $(this).attr('id');
+		w.window.onload = function() {
+			w.document.getElementById('image').innerHTML = document.getElementById(imageId).outerHTML;
+			w.resizeBy(w.document.images[0].width - w.innerWidth, w.document.images[0].height - w.innerHeight);
+		};
+		w.document.close();
+	});
 	
 	/* >> >> >> >> */	
 

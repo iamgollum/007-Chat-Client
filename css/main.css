@@ -343,6 +343,9 @@ border: 1px solid #7F9DB9;
 margin-top: 10px;
 }
 
+	#log p img{
+	cursor: pointer;
+	}
 /***** Input Section **** >>>
 */
 
