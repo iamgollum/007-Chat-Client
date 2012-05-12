@@ -19,14 +19,14 @@ Project: HTML 5 Chat Client
  1. Images Recieve can be clicked on in new popup window
  2. Inline image support - Defaults to echo server for testing.
  3. Chunking - only supported with echo server since actual server does not support it.
- 4. SEXY, SLICK, INSANE, KILLER >>> Chat Client Design and Features
+ 4. Slick Chat Client Design and Features
  
   007 THEMED CHAT CLIENT FEATURES
  ----------------------------------------------
  
  1. HTML 5 web socket status lights upper left corner
  2. Login Form
- 3. HOT, KICK ARSSS GOLDSCHMIDT BOND ANIMATION LOAD UP!!!!
+ 3. Professor Goldschmidt Bond Animation - A Must See!!!!
  4. On hover flash buttons
  5. sliding tabs, roll up screens
  6. HTML 5 Audio
@@ -50,8 +50,6 @@ Project: HTML 5 Chat Client
  
   LAST MINUTE NOTES
  ----------------------------------------------
- 1. Ugly versions are just design shells, they don't actually work
- 2. There are global options you can set in the chat client to help with grading
  	
 	/*DEBUG */
 	var DEBUG_MODE = 0; --> see more output
