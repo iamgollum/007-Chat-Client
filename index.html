@@ -3,18 +3,23 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Tobias HTML 5 Chat Client</title>
+		<!-- Cascading Style Sheets -->
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/login.css">
 	</head>
 	<body>
 	    <section id="main" class="centerAlign rounded tactileSurface">
+			
 			<aside id="antenna" class="absolute"> </aside>
-			<div id = "socketStatus" class="absolute">
+			<aside id = "socketStatus" class="absolute">
 				<span class="loading"></span>
 				<span class="loading"></span>
-			</div> 
+			</aside> 
+			
 			<h1>Q-Telecom Unit</h1>
-			<div id="toppanel">		
+			
+			<div id="toppanel">
+			
 				<div id="panel" class="login-form goldschmidt"> 
 					 
 					 <div id="blood" class="absolute"></div>
@@ -55,8 +60,8 @@
 						<span class="loading"></span>
 						<span class="loading"></span>
 					</div> 
-				</div>	
-				<!-- The tab on top -->	
+				</div>	<!-- END MAIN PANEL -->
+
 				<div class="tab">
 					<ul class="login">
 						<li class="left">&nbsp;</li>
@@ -69,14 +74,14 @@
 						<li id="panelMsg" class="hidden"> LOCKED </li>
 						<li class="right">&nbsp;</li>
 					</ul> 
-				</div> <!-- / top -->	
+				</div> 
 				
 			</div>
 			
 			<section id="log" class="centerAlign window overflow rounded">		    
 				<!-- 
 				Private message areas will be dynamically generate here 
-				All message areas will be swapped in and out by user
+				All message areas will be cycle display by user
 				-->
 			</section>
 			
@@ -105,6 +110,7 @@
 			<img id="imgclone" class="hidden" style="width: 20px; height: 20px;" src="" alt="" />
 		</section>
 		
+		<!-- Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
 		<script src="js/jquery.backgroundPosition.js"></script>
 		<script src="js/main.js"></script>

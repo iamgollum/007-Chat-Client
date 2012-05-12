@@ -3,11 +3,70 @@ Author: Aaron Tobias
 School: Rensselaer Polytechnic Institute
 Project: HTML 5 Chat Client
 
-Description: 
-
-	Chat Client using the latest HTML 5 web sockets and file reader.
-	This is an experimental project and the server is not completed
-	yet. I am currently using an echo server I found online for now.
+  CORE REQUIREMENTS
+ --------------------------------------------
+ 
+ 1. Broadcast messages
+ 2. Private messages
+ 3. Users (Logged In) cron script
+ 4. Multi-color users, color matching
+ 5. Ugly version of private client and broadcast client
+ 6. Basic error handling (Server handles most of it)
+ 
+  BONUS FEATURES COMPLETED
+ --------------------------------------------
+ 
+ 1. Images Recieve can be clicked on in new popup window
+ 2. Inline image support - Defaults to echo server for testing.
+ 3. Chunking - only supported with echo server since actual server does not support it.
+ 4. SEXY, SLICK, INSANE, KILLER >>> Chat Client Design and Features
+ 
+  007 THEMED CHAT CLIENT FEATURES
+ ----------------------------------------------
+ 
+ 1. HTML 5 web socket status lights upper left corner
+ 2. Login Form
+ 3. HOT, KICK ARSSS GOLDSCHMIDT BOND ANIMATION LOAD UP!!!!
+ 4. On hover flash buttons
+ 5. sliding tabs, roll up screens
+ 6. HTML 5 Audio
+ 7. HTML 5 Filereader
+ 8. Security Lock and Unlock (drop down menu after logged in)
+ 9. Tabbed system for Private Messages
+ 10. Message Notification System ==> users flash orange on incoming messages.
+ 11. CSS 3 Gradients
+ 
+ 
+   COMING SOON
+ ----------------------------------------------
+ 1. HTML 5 Storage
+ 2. SLICK ERROR HANDLING, USER NOTIFICATIONS
+ 3. OPTIMIZED JavaScript (Continuous Process)
+ 4. Better commenting, stick to a system
+ 5. More audio integration (sound effects)
+ 6. Weird pull levers and other interactive elements
+ 7. Object Oriented Design... ehhh ... who knows
+ 
+ 
+  LAST MINUTE NOTES
+ ----------------------------------------------
+ 1. Ugly versions are just design shells, they don't actually work
+ 2. There are global options you can set in the chat client to help with grading
+ 	
+	/*DEBUG */
+	var DEBUG_MODE = 0; --> see more output
+	var SKIP_BOND_ANIMATION = 1; -> skip bond animation
+	
+	/* Test Chunking with Echo Server */
+	var ECHO_SERVER_CHUNK_TEST = 0;
+	var ECHO_SERVER_START_TEST = 0;
+	
+	/* Test Inline Images with Echo Server (inline images cannot be chunked!) */
+	var INLINE_IMAGE_TEST = 0;
+	
+	
+  HAVE FUN AND GOOD LUCK - TOBIAS
+ ----------------------------------------------
 
 Protocol:
 
@@ -40,27 +99,9 @@ Protocol:
 	  got it?!
 	  C0
 	  
-	  LOGIN:  I AM <userID> 
+	  LOGIN:  I AM <userID>
 	  
 	  GET ONLINE CHATTERS:  USERS
 
-Current Features: 
-
-	slick interface
-	private chat support
-	over the top animations --> Professor Goldschmidt as 007
-	HTML 5 audio
-	HTML 5 Web Sockets
-	HTML 5 file reader
-	
-In progress:
-		HTML 5 Web Storage (maybe - not sure yet)
-		inline image support
-		image processing support
-		XSS protection
-		Optimize JavaScript 
-		DRY Design
-	
-Class: Network Programming
 Version: 1.0
 ----------------------------

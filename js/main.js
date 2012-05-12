@@ -11,8 +11,8 @@ $(document).ready(function() {
 	var psswd;
 	var serverMsg = "";
 	var yourName = "Aaron";
-	var CHUNK_SIZE = 10;
-	var CHUNK_MIN_REQ = 50000;
+	var CHUNK_SIZE = 100;
+	var CHUNK_MIN_REQ = 1000;
 	var clients = [];
     var cColors = new Object();
 	var imageList = new Object();
@@ -41,14 +41,22 @@ $(document).ready(function() {
 	
 	/*DEBUG */
 	var DEBUG_MODE = 0;
+	var SKIP_BOND_ANIMATION = 1;
 	
-	/* Test Chunking and Inline Images with Echo Server */
-	var ECHO_SERVER_CHUNK_TEST = 1;
-	var ECHO_SERVER_START_TEST = 1;
-	var INLINE_IMAGE_TEST = 1;
+	/* Test Chunking with Echo Server */
+	var ECHO_SERVER_CHUNK_TEST = 0;
+	var ECHO_SERVER_START_TEST = 0;
+	
+	/* Test Inline Images with Echo Server
+    (inline images cannot be chunked becuase of substring function) */
+	var INLINE_IMAGE_TEST = 0;
+	
+	/* User options */
+	var SERVER_HOST = "ws://karnani.co:8787/chat";
+	/* Other option if running: ws://aarontobias.com:8787/chat, ws://karnani.co:8787/chat, ws://tomrozanski.com:8787/chat */
 	
 	
-	/* >> HTML 5 Web Sockets >> */
+	/* >> Connect to Server - Start Up >> */
 
 	function init () {
 	
@@ -56,20 +64,18 @@ $(document).ready(function() {
 	   
 	   if( INLINE_IMAGE_TEST || ECHO_SERVER_CHUNK_TEST)
 		  host = "ws://echo.websocket.org/"; 
-	   else
-		host = "ws://karnani.co:8787/chat";	
-		/* Other option if running: ws://aarontobias.com:8787/chat, ws://tomrozanski.com:8787/chat */
+	   else if(SERVER_HOST)
+		  host = SERVER_HOST;
 		
 		var sequence = $("#socketStatus .loading");
 
 		try {
 			socket = ("MozWebSocket" in window ? new MozWebSocket (host) : new WebSocket(host));
 
-				log ('WebSocket - status ' + socket.readyState);
+				/* socket.readyState - access web socket state information */
 				sequence.eq(0).animate({opacity:'1.0'}, 1000);
 			
 			socket.onopen = function (msg) {
-				log ("Welcome - status " + this.readyState);
 				sequence.eq(1).animate({opacity:'1.0'}, 1000);
 			}
 			
@@ -79,23 +85,23 @@ $(document).ready(function() {
 				  LOGGED_IN = 1;
 				  CURRENT_PRIVATE_USER = yourName;
 				  
-				  if(DEBUG_MODE) 
+				  if(!SKIP_BOND_ANIMATION) 
 					loginAnimation();
 				  else
 				   unlock();
-				  
+
 				  ECHO_SERVER_START_TEST = 0;
 			   };
 			}
 
 			socket.onclose = function (msg) {
-				log ("Disconnected - status " + this.readyState); 
-				sequence.eq(0).animate({opacity:'0.2'}, 1000);
+				log("Disconnected - status " + this.readyState, "Q-Unit"); 
 				sequence.eq(1).animate({opacity:'0.2'}, 1000);
+				sequence.eq(0).animate({opacity:'0.2'}, 1000);
 			}
 		}
 		catch (ex) {
-			log (ex);
+			log (ex, "Q-Unit");
 		}
 	}
 	
@@ -115,11 +121,11 @@ $(document).ready(function() {
 			return;
 		}
 		
-		// prepare Message
+		/* prepare Message */
 		msg = msg.replace(/\n/g,"<br/>");
 		var newImage = $("#imgclone").clone().removeClass("hidden");
 		
-		//test replace in loop for each image!
+		/* test replace in loop for each image! */
 		var imgListSize = Object.keys(imageList).length;
 		for(i = 1; i <= imgListSize; i++){
 			newImage.attr('src', imageList[i]);
@@ -141,21 +147,16 @@ $(document).ready(function() {
 		else{
 			msg = "BROADCAST\n";
 		}
-		// Max Limit
 		
 		/*
+		Max Limit
 		if(msgLen > 999){ 
 			txt.val("Maximum Exceeded!"); 
 			return; 
 		}
 		*/
 		
-		/*
-		PROBLEM TO FIX: originalMsg containing image data, 
-		substring does not work, returns undefined!!
-		*/
-		
-		// Chunk If Needed
+		/* Chunk If Needed */
 		if(msgLen > CHUNK_MIN_REQ){
 		
 		    while(remSize > CHUNK_SIZE){
@@ -164,7 +165,7 @@ $(document).ready(function() {
 				stop += CHUNK_SIZE;
 				start += CHUNK_SIZE;
 			}
-			// grab remaining
+			/* grab remaining */
             if(remSize > 0){			
 				msg = msg + "C" + remSize + "\n" + originalMsg.substring(start) + "\nC0";
 			}
@@ -225,7 +226,7 @@ $(document).ready(function() {
 		
 		for(i=0; i < lines.length; i++){
 		     
-		    //parse Header for Recipient 
+		    /* Parse header for recipient */ 
 		    if(i == 0){
 				var head = lines[i].split(" ");
 			   
@@ -257,7 +258,6 @@ $(document).ready(function() {
 			else{
 
 				if(lines[i].match(numbersOnly) == null){
-					log("Found only letters", yourName);
 					compiledMsg += lines[i];
 				}
 				else if(lines[i].match(imagePattern) != null){
@@ -265,7 +265,6 @@ $(document).ready(function() {
 				}
 			}
 		}
-		
 		log(compiledMsg, userID, isPrivate);
 	 }
      
@@ -289,7 +288,6 @@ $(document).ready(function() {
 			}
 			// create new
 			else{
-				$("#log").append('<div id="' + user + '"> </div>');
 				$("#"+user).addClass("currentClient");
 				$(this).parent().addClass("open");
 			}
@@ -311,6 +309,7 @@ $(document).ready(function() {
 			 /* Add only new clients */
 		     if($("#_"+thisClient).length == 0){
 				link = createPrivateLink(thisClient);
+				$("#log").append('<div id="' + thisClient + '"> </div>');
 				allUsers += link;
 			 }
 
@@ -331,7 +330,7 @@ $(document).ready(function() {
 			var id = $(this).attr('id');
 
 			if($(this).hasClass("online")){
-				//log(id + " is online");
+				/* do nothing */
 			}
 			else
 			if(!$(this).hasClass("online") && $(this).hasClass("check")){
@@ -365,18 +364,18 @@ $(document).ready(function() {
 	
 	/* >> Utilities >> */
 	
-	// Output messages to console: private or broadcast
+	/* Output messages to console: private or broadcast */
 	function log (msg, targetUser, isPrivate) {
 
-	    if(isPrivate) {			
+	    if(isPrivate) {				
 			$("#"+targetUser).append("<p>" + colorLogUsers(targetUser) + ": " + msg + "<p>");
 		}
 		else{
-			$("#"+yourName).append("<p>" + colorLogUsers(targetUser) + ": " + msg + "<p>");
+			$("#"+yourName).append("<p>" + colorLogUsers(yourName) + ": " + msg + "<p>");
 		}
 	}
 	
-	// Get random color for user links
+	/* Get random color for user links */
 	function get_random_color() {
 		var letters = 'A709C2'.split('');
 		var color = '#';
@@ -386,13 +385,13 @@ $(document).ready(function() {
 		return color;
 	}
 	
-	// Color users in chat window
+	/* Color users in chat window */
 	function colorLogUsers(n){
 		var link = '<span style=" color: ' + cColors[n] + '">' + n + '</span>';
 	    return link;
 	}
 	
-	// Create User Links
+	/* Create User Links */
 	function createPrivateLink(n){
 	    var color = get_random_color();	
         cColors[n] = color;		
@@ -408,7 +407,7 @@ $(document).ready(function() {
 		return link;
 	}
 	
-	// Handle Hotkeys for Messages
+	/* Handle Hotkeys for Messages */
 	$("#msg").bind('keypress', function(event) {
 	
 		if (event.keyCode == 13 && !event.shiftKey) {
@@ -433,7 +432,7 @@ $(document).ready(function() {
 	  
 	  msg.val(msg.val() + '[img' + imageCount +']'); 
 	  imageList[imageCount] = byteImageData;
-	  //log("IMG: " + imageList[imageCount]);
+
 	  imageCount++;
 	};  
 	  
@@ -448,7 +447,7 @@ $(document).ready(function() {
 		loadImageFile();
 	});
 
-	// clickable images in new window
+	/* clickable images in new window */
 	$("#log img").live('click', function(){
 		var w = window.open('popup_image.html', '', 'width=400,height=400');
 		var imageId = $(this).attr('id');
@@ -465,7 +464,7 @@ $(document).ready(function() {
 	/* >> Login and Load Up Animations >> */
 	
 	$(".startUp form").submit(function(){
-	
+
 	  yourName = $(".startUp input:nth-child(1)").attr("value");
 	  psswd = $(".startUp input:nth-child(2)").attr("value");
 	  if(yourName == ""){return false; }
@@ -476,12 +475,12 @@ $(document).ready(function() {
 	 
 	  /* LOGIN TO SERVER */
 	  socket.send ("I AM "+ yourName);
-	 
+
 	   return false;
 	});
 	
 	
-	// Animation 0: start sequence
+	/* Animation 0: start sequence */
 	function loginAnimation(){
 		var sequence = $("#processing .loading");
 		var count = sequence.length;
@@ -492,7 +491,7 @@ $(document).ready(function() {
 
 		setTimeout(transition, pause);
 
-		// Login Animation
+		/* Login Animation */
 		function transition(){
 			sequence.eq(i).animate({opacity:'1.0'}, 1000);
 
@@ -505,7 +504,8 @@ $(document).ready(function() {
 		setTimeout(transition, pause);	 
 		}
 	}
-	// Animation 1: bond sequence
+	
+	/* Animation 1: bond sequence */
 	function bondSequence(){
 	  panelMsg.hide("slow");
 	  close.hide("slow");	
@@ -525,7 +525,9 @@ $(document).ready(function() {
 			bondAudio.play();
 		}
 	}
-
+	
+	/* Animation 2: lock sequence */
+	
 	$(".lock form").submit(function(){
 	  var submitName = $(".lock input:nth-child(1)").attr("value");
 	  var submitPasswd = $(".lock input:nth-child(2)").attr("value");
@@ -535,8 +537,6 @@ $(document).ready(function() {
 	  return false;
 	
 	});
-	
-	/* Animation 2: lock sequence */
 	
 	function lock(){
 		close.hide("slow");
