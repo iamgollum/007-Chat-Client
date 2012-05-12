@@ -41,7 +41,7 @@ $(document).ready(function() {
 	
 	/*DEBUG */
 	var DEBUG_MODE = 0;
-	var SKIP_BOND_ANIMATION = 1;
+	var SKIP_BOND_ANIMATION = 0;
 	
 	/* Test Chunking with Echo Server */
 	var ECHO_SERVER_CHUNK_TEST = 0;
@@ -572,10 +572,12 @@ $(document).ready(function() {
 
 	/* Animation 3: unlock sequence */
 	function unlock(){
+	
 	  panelMsg.hide("slow");
 	  slidingPanel.slideUp(2000, function(){
 			  open.show("slow");
 	  });	
+	  $("#agent").slideUp(1800);
 	  
 	  $(".login li:nth-child(2)").html(yourName + " online");
 	  uxWindows.addClass("windowGlow");
@@ -586,10 +588,10 @@ $(document).ready(function() {
 	}
 	
 	function displayLoginLock(){
+		graphicBlood.addClass("hidden");
 		startUpAnimArea.addClass("hidden");
 		lockPanel.removeClass("hidden");
 		$(".login-form").removeClass("goldschmidt");
-		graphicBlood.addClass("hidden");
 	}
 	
 	
