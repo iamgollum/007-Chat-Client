@@ -41,7 +41,7 @@ $(document).ready(function() {
 	
 	/*DEBUG */
 	var DEBUG_MODE = 0;
-	var SKIP_BOND_ANIMATION = 0;
+	var SKIP_BOND_ANIMATION = 1;
 	
 	/* Test Chunking with Echo Server */
 	var ECHO_SERVER_CHUNK_TEST = 0;
@@ -52,7 +52,7 @@ $(document).ready(function() {
 	var INLINE_IMAGE_TEST = 0;
 	
 	/* User options */
-	var SERVER_HOST = "ws://karnani.co:8787/chat";
+	var SERVER_HOST = "ws://karnani.co:8888/chat";
 	/* Other option if running: ws://aarontobias.com:8787/chat, ws://karnani.co:8787/chat, ws://tomrozanski.com:8787/chat */
 	
 	
@@ -190,13 +190,12 @@ $(document).ready(function() {
 	}
 	 
 	 function serverResponse(resp){
-
+	 
 		var lines = resp.split("\n");
-		var users = resp.split(",");
+		var users = lines[0].split(",");
 
 		/* get client listing */
 		if(!INLINE_IMAGE_TEST && ((users[0] == yourName && users.length == 1) || users.length > 1)){
-			
 			clients = users;
 			getClientListing();
 			return;
@@ -310,11 +309,17 @@ $(document).ready(function() {
 		     if($("#_"+thisClient).length == 0){
 				link = createPrivateLink(thisClient);
 				$("#log").append('<div id="' + thisClient + '"> </div>');
+				
+				if(thisClient != yourName){
+					$("#"+thisClient).addClass("hidden");
+				}
+				
 				allUsers += link;
 			 }
-
+		
 			$("#_"+thisClient).addClass("online");
 		}
+		
 		$("#controller p").html('Logged in as "' + yourName + '" (type message and hit ENTER or click SEND)');
 		$("#users").append(allUsers);
 
@@ -474,7 +479,7 @@ $(document).ready(function() {
 	  if(isNaN(parseInt(psswd))){ alert("Not Valid Number"); return false; }
 	 
 	  /* LOGIN TO SERVER */
-	  socket.send ("I AM "+ yourName);
+	  socket.send ("I AM "+ yourName + "\n");
 
 	   return false;
 	});
@@ -588,6 +593,8 @@ $(document).ready(function() {
 	}
 	
 	function displayLoginLock(){
+	
+	    $("#panel").css("background-color", "#272727");
 		graphicBlood.addClass("hidden");
 		startUpAnimArea.addClass("hidden");
 		lockPanel.removeClass("hidden");
