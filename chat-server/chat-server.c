@@ -1,6 +1,25 @@
 /* chat-server.c */
 
-/* COMPILE USING: gcc -Wall chat-server.c sha1-c/sha1.o base64.o -lm */
+/* COMPILE sha1-c by doing this:
+ *
+ *   bash$ cd sha1-c
+ *   bash$ gcc -Wall -c sha1.c
+ *
+ *    (this creates the sha1.o file in the sha1-c directory)
+ */
+
+/* COMPILE base64.c by doing this:
+ *
+ *   bash$ gcc -Wall -c base64.c
+ *
+ *    (this creates the base64.o file)
+ */
+
+/* COMPILE USING:
+ *
+ *   bash$ gcc -Wall -o chat-server chat-server.c sha1-c/sha1.o base64.o -lm
+ *
+ */
 
 #include <math.h>
 #include <sys/errno.h>
@@ -25,12 +44,24 @@
 #define WS_STATUS_CLOSING 3
 #define WS_STATUS_CLOSED 4
 
+/* change this to a '|' character for testing the SEND command */
+char newline = '\n';
+
+
 extern int errno;
 
 #define BUFFER_SIZE 4096
 #define MAX_CLIENTS 100
 
 int hex_to_digit( char h ) { return ( h > '9' ? h - 'A' + 10 : h - '0' ); }
+
+void trim_right( char * s )
+{
+  while ( strlen( s ) > 0 && s[ strlen( s ) - 1 ] == newline )
+  {
+    s[ strlen( s ) - 1 ] = '\0';
+  }
+}
 
 char * do_hash( char * sec_ws_key );
 char * encode_base64( int size, unsigned char * src );
@@ -424,6 +455,10 @@ int main()
               {
                 perror( "send()" );
               }
+              else
+              {
+                printf( "successfully sent %d bytes\n", n );
+              }
             }
             else
             {
@@ -433,13 +468,17 @@ int main()
                 if ( chatusers[i].username != NULL )
                 {
                   int fd = chatusers[i].fd;
-                  printf( "SENDING TO fd %d\n", fd );
+                  printf( "SENDING (broadcast) TO fd %d\n", fd );
                   printf( "SENDING: [%s]\n", response );
 
                   n = send( fd, response, response_length, 0 );
                   if ( n < response_length )
                   {
                     perror( "send()" );
+                  }
+                  else
+                  {
+                    printf( "successfully sent %d bytes\n", n );
                   }
                 }
               }
@@ -478,7 +517,7 @@ int main()
 
 
 
-/* payload is "I AM <username>" etc. */
+/* payload is "I AM <username>\n" etc. */
 /* response has first byte set (FIN and OPCODE) */
 /* returns whether to close connection (1) or not (0) */
 int process_cmd( int chatuser_index,
@@ -487,40 +526,43 @@ int process_cmd( int chatuser_index,
                  char * response,
                  int * response_length )
 {
-  char newline = '|';
-
   if ( strncmp( payload, "I AM ", 5 ) == 0 )
   {
+    trim_right( payload );
+
     if ( find_chatuser( payload + 5 ) == -1 )
     {
       chatusers[ chatuser_index ].username = (char *)calloc( payload_length - 4, sizeof( char ) );
       strcpy( chatusers[ chatuser_index ].username, payload + 5 );
       printf( "Identified user: [%s]\n", chatusers[ chatuser_index ].username );
 
-      response[1] = 0x02; /* MASK of 0 and LENGTH of 2 */
+      response[1] = 0x03; /* MASK of 0 and LENGTH of 3 */
       response[2] = 'O';
       response[3] = 'K';
-      *response_length = 4;
+      response[4] = newline;
+      response[5] = '\0';
+      *response_length = 5;
     }
     else
     {
       printf( "Duplicate user: [%s]\n", payload + 5 );
 
-      response[1] = 0x05; /* MASK of 0 and LENGTH of 5 */
+      response[1] = 0x06; /* MASK of 0 and LENGTH of 6 */
       response[2] = 'E';
       response[3] = 'R';
       response[4] = 'R';
       response[5] = 'O';
       response[6] = 'R';
-      *response_length = 7;
+      response[7] = newline;
+      response[8] = '\0';
+      *response_length = 8;
     }
   }
   else if ( strncmp( payload, "USERS", 5 ) == 0 )
   {
     char allusers[8192];
-    allusers[0] = '\0';
-
     int i, first;
+    for ( i = 0 ; i < 8192 ; i++ ) { allusers[i] = '\0'; }
     for ( i = 0, first = 1 ; i < chatuser_next_index ; i++ )
     {
       if ( chatusers[i].username != NULL )
@@ -529,6 +571,8 @@ int process_cmd( int chatuser_index,
         strcat( allusers, chatusers[i].username );
       }
     }
+    allusers[ strlen( allusers ) ] = newline;
+    allusers[ strlen( allusers ) ] = '\0';
 
     if ( strlen( allusers ) > 125 )
     {
@@ -556,20 +600,22 @@ int process_cmd( int chatuser_index,
     {
       printf( "Unknown user: [%s]\n", username );
 
-      response[1] = 0x05; /* MASK of 0 and LENGTH of 5 */
+      response[1] = 0x06; /* MASK of 0 and LENGTH of 6 */
       response[2] = 'E';
       response[3] = 'R';
       response[4] = 'R';
       response[5] = 'O';
       response[6] = 'R';
-      *response_length = 7;
+      response[7] = newline;
+      response[8] = '\0';
+      *response_length = 8;
     }
     else
     {
       printf( "Found user on fd %d\n", chatusers[ index ].fd );
       strcpy( response + 2, "PRIVATE FROM " );
       strcpy( response + 15, chatusers[ chatuser_index ].username );
-      strcat( response + 15, payload + 4 + strlen( username ) );
+      strcat( response + 15, payload + 5 + strlen( username ) );
       *response_length = strlen( response + 2 ) + 2;
       response[1] = strlen( response + 2 );
       return chatusers[ index ].fd;

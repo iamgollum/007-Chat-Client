@@ -41,7 +41,7 @@ $(document).ready(function() {
 	
 	/*DEBUG */
 	var DEBUG_MODE = 0;
-	var SKIP_BOND_ANIMATION = 1;
+	var SKIP_BOND_ANIMATION = 0;
 	
 	/* Test Chunking with Echo Server */
 	var ECHO_SERVER_CHUNK_TEST = 0;
@@ -193,7 +193,7 @@ $(document).ready(function() {
 	 
 		var lines = resp.split("\n");
 		var users = lines[0].split(",");
-
+		
 		/* get client listing */
 		if(!INLINE_IMAGE_TEST && ((users[0] == yourName && users.length == 1) || users.length > 1)){
 			clients = users;
@@ -236,7 +236,7 @@ $(document).ready(function() {
 					}	
 					else
 						userID = head[2];
-					
+
 					$("#_"+yourName).parent().css("background-color", "rgb(188, 51, 13)");
 					
 					setTimeout(function(){
@@ -376,7 +376,7 @@ $(document).ready(function() {
 			$("#"+targetUser).append("<p>" + colorLogUsers(targetUser) + ": " + msg + "<p>");
 		}
 		else{
-			$("#"+yourName).append("<p>" + colorLogUsers(yourName) + ": " + msg + "<p>");
+			$("#"+yourName).append("<p>" + colorLogUsers(targetUser) + ": " + msg + "<p>");
 		}
 	}
 	
