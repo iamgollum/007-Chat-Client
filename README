@@ -1,8 +1,8 @@
 ----------------------------
 Author: Aaron Tobias
 School: Rensselaer Polytechnic Institute
-Bonus Project: HTML 5 Chat Client
-Class: Network Programming
+Project Type: Open Source
+
 
   CORE REQUIREMENTS
  --------------------------------------------
@@ -11,8 +11,7 @@ Class: Network Programming
  2. Private messages
  3. Users (Logged In) cron script - currently set to 10 second increments
  4. Multi-color users, color matching
- 5. Ugly version of private client and broadcast client
- 6. Basic error handling (Server handles most of it)
+ 5. Basic error handling (Server should do all the heavy lifting)
  
   BONUS FEATURES COMPLETED
  --------------------------------------------
@@ -40,14 +39,13 @@ Class: Network Programming
  
    COMING SOON
  ----------------------------------------------
- 1. NEW REALISTIC PROTOCOL FOR SERVER (existing was quick and dirty) [ TOP PRIORITY ]
+ 1. Server protocol needs to be more realistic [ TOP PRIORITY ]
  2. Better error handling, emphasis on graceful user notifications
  3. OPTIMIZED JavaScript (Continuous Process)
  4. Better commenting, stick to a system
  5. More audio integration (sound effects)
  6. Weird pull levers and other interactive elements
- 7. Object Oriented Design ... not sure its needed
- 8. HTML 5 Storage
+ 7. HTML 5 Storage
  
  
   LAST MINUTE NOTES
@@ -66,7 +64,7 @@ Class: Network Programming
 	
  ----------------------------------------------
 
-Current Protocol:
+Current Protocol (Example):
 
 	When a client receives a message from the server,
     it will appear as a FROM message, but with either
