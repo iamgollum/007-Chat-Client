@@ -1,4 +1,7 @@
-/* chat-server.c */
+/* 
+chat-server.c 
+Aaron Tobias
+*/
 
 /* COMPILE sha1-c by doing this:
  *
