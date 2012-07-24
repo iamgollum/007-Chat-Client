@@ -9,9 +9,8 @@ Project Type: Open Source
  
  1. Broadcast messages
  2. Private messages
- 3. Users (Logged In) cron script - currently set to 10 second increments
- 4. Multi-color users, color matching
- 5. Basic error handling (Server should do all the heavy lifting)
+ 3. Multi-color users, color matching
+ 4. Basic error handling (Server should do all the heavy lifting)
  
   BONUS FEATURES COMPLETED
  --------------------------------------------
