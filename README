@@ -3,6 +3,16 @@ Author: Aaron Tobias
 School: Rensselaer Polytechnic Institute
 Project Type: Open Source
 
+ HTML 5 Inherent Security Problems
+ --------------------------------------------
+ 1. http://blog.kotowicz.net/2011/01/xss-track-as-html5-websockets-traffic.html
+ 2. http://www.darkreading.com/advanced-threats/167901091/security/application-security/240003877/waldo-finds-ways-to-abuse-html5-websockets.html
+ 3. In a nutshell the client can XSS since websocket needs a client side interface -> JS
+ 
+ HTML 5 Security Practices and Facts
+ --------------------------------------------
+ 1. http://blog.kaazing.com/2012/02/28/html5-websocket-security-is-strong/
+
 
   CORE REQUIREMENTS
  --------------------------------------------
